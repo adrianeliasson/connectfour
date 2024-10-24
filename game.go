@@ -6,34 +6,21 @@ import (
 	"os"
 	"strings"
 )
-
-type Board [][]int
+const NumberOfColumns = 7
+const ColumnSize = 6
+type Column []int
+type Board []Column
 type Game struct {
-	board      Board
+	board      []Column
 	playerTurn int
 }
 
-func transpose(a [][]int) [][]int {
-	newArr := make([][]int, len(a))
-	for i := 0; i < 6; i++ {
-		for j := 0; j < 7; j++ {
-			newArr[j] = append(newArr[j], a[i][j])
-		}
-	}
-
-	return newArr
-}
-
 func (g *Game) init() {
-	g.board = Board{
-		{0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0},
+	board := make([]Column, NumberOfColumns)
+	for i := range board {
+		board[i] = make(Column, ColumnSize)
 	}
+	g.board = board
 	g.playerTurn = 1
 }
 
@@ -93,9 +80,9 @@ func (g *Game) changeTurn() {
 }
 
 func (g Game) printGameState() {
-	for i := 6; i >= 0; i-- {
-		for j := 0; j < 7; j++ {
-			fmt.Print(xoro(g.board[j][i]), " ")
+	for i, _ := range g.board[0] {
+		for _, column:= range g.board {
+			fmt.Print(xoro(column[len(column) - i - 1]), " ")
 		}
 		fmt.Print("\n")
 	}
