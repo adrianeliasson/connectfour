@@ -97,7 +97,7 @@ func (g Game) printGameState() {
 		for j := 0; j < 7; j++ {
 			fmt.Print(xoro(g.board[j][i]), " ")
 		}
-		// fmt.Print("\n")
+		fmt.Print("\n")
 	}
 }
 

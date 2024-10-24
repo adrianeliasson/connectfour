@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -111,18 +110,18 @@ func (m model) Init() tea.Cmd {
 	return nil
 }
 
-func main() {
-	p := tea.NewProgram(initialModel())
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
-	}
-}
-
 // func main() {
-// 	fmt.Println("Welcome to Connect 4, the great classic game.")
-// 	runConnectFour()
+// 	p := tea.NewProgram(initialModel())
+// 	if _, err := p.Run(); err != nil {
+// 		fmt.Printf("Alas, there's been an error: %v", err)
+// 		os.Exit(1)
+// 	}
 // }
+
+func main() {
+	fmt.Println("Welcome to Connect 4, the great classic game.")
+	runConnectFour()
+}
 
 func runConnectFour() {
 	game := &Game{}
