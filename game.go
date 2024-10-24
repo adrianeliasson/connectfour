@@ -7,6 +7,12 @@ import (
 	"strings"
 )
 
+type Board [][]int
+type Game struct {
+	board      Board
+	playerTurn int
+}
+
 func transpose(a [][]int) [][]int {
 	newArr := make([][]int, len(a))
 	for i := 0; i < 6; i++ {
@@ -18,10 +24,17 @@ func transpose(a [][]int) [][]int {
 	return newArr
 }
 
-type Board [][]int
-type Game struct {
-	board      Board
-	playerTurn int
+func (g *Game) init() {
+	g.board = Board{
+		{0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0},
+	}
+	g.playerTurn = 1
 }
 
 func xoro(n int) string {
@@ -45,9 +58,11 @@ func count[T any](slice []T, f func(T) bool) int {
 	}
 	return count
 }
+
 func countOnesOrTwos(slice []int) int {
 	return count(slice, func(x int) bool { return x == 1 || x == 2 })
 }
+
 func (g *Game) placePiece(colNumber int) {
 	numberOfNonZeroes := countOnesOrTwos(g.board[colNumber])
 	if len(g.board[colNumber]) < numberOfNonZeroes+1 {
@@ -56,6 +71,12 @@ func (g *Game) placePiece(colNumber int) {
 	}
 	g.board[colNumber][numberOfNonZeroes] = g.playerTurn
 	g.changeTurn()
+}
+
+func (g *Game) play() {
+	for !g.isOver() {
+		g.makeTurn()
+	}
 }
 
 func (g Game) isOver() bool {
@@ -76,7 +97,7 @@ func (g Game) printGameState() {
 		for j := 0; j < 7; j++ {
 			fmt.Print(xoro(g.board[j][i]), " ")
 		}
-		fmt.Print("\n")
+		// fmt.Print("\n")
 	}
 }
 
