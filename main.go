@@ -17,7 +17,8 @@ func initialModel() model {
 	game := &Game{}
 	game.init()
 	return model{
-		game: game,
+		game:   game,
+		cursor: 3,
 	}
 }
 
@@ -62,7 +63,7 @@ func (m model) View() string {
 	cursorRow += cursor
 	s += fmt.Sprintf("%s\n", cursorRow)
 
-	s += m.game.printGameState()
+	s += m.game.gameStateToString()
 
 	s += "\nPress q to quit.\n"
 

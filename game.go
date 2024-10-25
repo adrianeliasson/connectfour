@@ -45,7 +45,7 @@ func (g *Game) placePiece(colNumber int) bool {
 
 func (g *Game) play() {
 	for !g.isOver() {
-		g.printGameState()
+		g.gameStateToString()
 		g.makeTurn()
 	}
 }
@@ -74,7 +74,7 @@ func xoro(n int) string {
 	}
 }
 
-func (g Game) printGameState() string {
+func (g Game) gameStateToString() string {
 	stateToString := ""
 	for i := range g.board[0] {
 		for _, column := range g.board {
