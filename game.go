@@ -1,14 +1,16 @@
 package main
 
 import (
-	"slices"
 	"bufio"
 	"fmt"
 	"os"
+	"slices"
 	"strings"
 )
+
 const NumberOfColumns = 7
 const ColumnSize = 6
+
 type Column []int
 type Board []Column
 type Game struct {
@@ -25,15 +27,20 @@ func (g *Game) init() {
 	g.playerTurn = 1
 }
 
-func (g *Game) placePiece(colNumber int) {
+func (g *Game) hasEmptySlot(colNumber int) (bool, int) {
 	firstEmptySlot := slices.IndexFunc(g.board[colNumber], func(n int) bool { return n == 0 })
-	hasEmptySlots := firstEmptySlot < 0
-	if hasEmptySlots {
-		fmt.Println("That column is full")
-		return
+	hasEmptySlot := firstEmptySlot >= 0
+	return hasEmptySlot, firstEmptySlot
+}
+
+func (g *Game) placePiece(colNumber int) bool {
+	hasEmptySlot, firstEmptySlot := g.hasEmptySlot(colNumber)
+	if hasEmptySlot == false {
+		return false // Fail
 	}
 	g.board[colNumber][firstEmptySlot] = g.playerTurn
 	g.changeTurn()
+	return true // Success
 }
 
 func (g *Game) play() {
@@ -67,13 +74,15 @@ func xoro(n int) string {
 	}
 }
 
-func (g Game) printGameState() {
-	for i, _ := range g.board[0] {
-		for _, column:= range g.board {
-			fmt.Print(xoro(column[len(column) - i - 1]), " ")
+func (g Game) printGameState() string {
+	stateToString := ""
+	for i := range g.board[0] {
+		for _, column := range g.board {
+			stateToString += xoro(column[len(column)-i-1]) + " "
 		}
-		fmt.Print("\n")
+		stateToString += "\n"
 	}
+	return stateToString
 }
 
 func (g *Game) makeTurn() {

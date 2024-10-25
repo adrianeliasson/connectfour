@@ -2,29 +2,22 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
-	cursorPaddingLeft  string
-	cursorPaddingRight string
-	game               *Game
-	choices            []string         // items on the to-do list
-	cursor             int              // which to-do list item our cursor is pointing at
-	selected           map[int]struct{} // which to-do items are selected
+	game   *Game
+	cursor int // which to-do list item our cursor is pointing at
 }
 
 func initialModel() model {
 	game := &Game{}
 	game.init()
 	return model{
-		cursorPaddingRight: "                     ",
-		cursorPaddingLeft:  " ",
-		game:               game,
-		choices:            []string{"Buy carrots", "Buy celery", "Buy kohlrabi"},
-		selected:           make(map[int]struct{}),
+		game: game,
 	}
 }
 
@@ -40,32 +33,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "left", "h":
-			if m.cursorPaddingLeft != "" {
-				m.cursorPaddingLeft = TrimSuffix(m.cursorPaddingLeft, " ")
-				m.cursorPaddingRight += " "
-			}
-		case "right", "l":
-			if m.cursorPaddingRight != "" {
-				m.cursorPaddingRight = TrimSuffix(m.cursorPaddingRight, " ")
-				m.cursorPaddingLeft += " "
-			}
-		case "ctrl+c", "q":
-			return m, tea.Quit
-		case "up", "k":
 			if m.cursor > 0 {
 				m.cursor--
 			}
-		case "down", "j":
-			if m.cursor < len(m.choices)-1 {
+		case "right", "l":
+			if m.cursor < len(m.game.board)-1 {
 				m.cursor++
 			}
+		case "ctrl+c", "q":
+			return m, tea.Quit
 		case "enter", " ":
-			_, ok := m.selected[m.cursor]
-			if ok {
-				delete(m.selected, m.cursor)
-			} else {
-				m.selected[m.cursor] = struct{}{}
-			}
+			m.game.placePiece(m.cursor)
 		}
 	}
 
@@ -75,31 +53,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m model) View() string {
-	// The header
-	s := "What should we buy at the market?\n\n"
-
-	topCursor := "v"
-	s += fmt.Sprintf("%s%s%s\n", m.cursorPaddingLeft, topCursor, m.cursorPaddingRight)
-	// Iterate over our choices
-	for i, choice := range m.choices {
-
-		// Is the cursor pointing at this choice?
-		cursor := " " // no cursor
-		if m.cursor == i {
-			cursor = ">" // cursor!
-		}
-
-		// Is this choice selected?
-		checked := " " // not selected
-		if _, ok := m.selected[i]; ok {
-			checked = "x" // selected!
-		}
-
-		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, choice)
+	s := "For in a row!\n\n"
+	cursor := "v"
+	cursorRow := ""
+	for i := 0; i < m.cursor; i++ {
+		cursorRow += "  "
 	}
+	cursorRow += cursor
+	s += fmt.Sprintf("%s\n", cursorRow)
 
-	// The footer
+	s += m.game.printGameState()
+
 	s += "\nPress q to quit.\n"
 
 	// Send the UI for rendering
@@ -110,18 +74,18 @@ func (m model) Init() tea.Cmd {
 	return nil
 }
 
-// func main() {
-// 	p := tea.NewProgram(initialModel())
-// 	if _, err := p.Run(); err != nil {
-// 		fmt.Printf("Alas, there's been an error: %v", err)
-// 		os.Exit(1)
-// 	}
-// }
-
 func main() {
-	fmt.Println("Welcome to Connect 4, the great classic game.")
-	runConnectFour()
+	p := tea.NewProgram(initialModel())
+	if _, err := p.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
+	}
 }
+
+// func main() {
+// 	fmt.Println("Welcome to Connect 4, the great classic game.")
+// 	runConnectFour()
+// }
 
 func runConnectFour() {
 	game := &Game{}
