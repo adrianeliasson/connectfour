@@ -47,7 +47,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.game.placePiece(m.cursor)
 		}
 	}
-
+	isOver, player := m.game.isOver()
+	if isOver {
+		fmt.Println("\nPlayer", player, "Wins!")
+		return m, tea.Quit
+	}
 	// Return the updated model to the Bubble Tea runtime for processing.
 	// Note that we're not returning a command.
 	return m, nil
@@ -81,15 +85,4 @@ func main() {
 		fmt.Printf("Alas, there's been an error: %v", err)
 		os.Exit(1)
 	}
-}
-
-// func main() {
-// 	fmt.Println("Welcome to Connect 4, the great classic game.")
-// 	runConnectFour()
-// }
-
-func runConnectFour() {
-	game := &Game{}
-	game.init()
-	game.play()
 }
