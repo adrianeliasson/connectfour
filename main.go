@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type model struct {
 	game   *Game
-	cursor int // which to-do list item our cursor is pointing at
+	cursor int
 }
 
 func initialModel() model {
@@ -20,13 +19,6 @@ func initialModel() model {
 		game:   game,
 		cursor: 3,
 	}
-}
-
-func TrimSuffix(s, suffix string) string {
-	if strings.HasSuffix(s, suffix) {
-		s = s[:len(s)-len(suffix)]
-	}
-	return s
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
