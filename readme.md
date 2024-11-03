@@ -34,6 +34,17 @@ TODO in terms of online play
 - When selecting online play, write the name of the player to want to versus. This would require you to set your own name when entering online play so that others can play vs you.
 - Websocket Server should connect players who wrote eachothers names (how this will work in reality I have no clue). 
 
+Okay after having researched websockets a bit (Reading parts of the RFC, reading implementations of it, watching videos of people going over it and also researching packages in GO that implements websocket for us to use freely), I think I have a good enough grasp of the technology to get going with implementing it myself.
+
+I will be having a websocket server in GCP because that makes it easy and convenient for clients to reach no matter where they are.
+
+What data to pass. I am thinking to allow sending a few message types
+- Cursor placement (Just pass an int between 0-6 or 1-7 so each client can update their opponents cursor placement)
+- Mark placed (another int between 0-6 or 1-7).
+I need to decide where to keep track of whose turn it is. Right now the clients keep track of it, but I don't think it would be hard to modify the client to circumvent 
+this and just put a bunch of marks. Probably I should do some arbitration on the server side somehow. Anyway for now I will just keep it simple and let clients keep track of it.
+- Server will assign whos turn it is to begin. We could make it so that it is the "challenged" player that will start (meaning the second one to enter the room)
+
 
 ## Run it locally
 ```{bash}

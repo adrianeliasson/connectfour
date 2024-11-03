@@ -8,3 +8,4 @@ I like to be
 - [x] Actually allow winning (setup rules)
 - [] When a player wins, color the row/column/diagonal that won (extra exp if you win by connecting 5+ marks)
 - [] Database vs WebSocket 
+- If local play, let me play vs computer
